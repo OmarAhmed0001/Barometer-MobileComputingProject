@@ -2,7 +2,7 @@ Sure! Here's a documentation for the provided code:
 
 # Barometer Example
 
-Page 1: Barometer Example Documentation
+ Barometer Example Documentation
 
 ## Introduction
 
@@ -67,7 +67,7 @@ The Barometer Example provides the following functionality:
 - The application assumes a constant threshold value of 1013.25 for identifying outliers. You can adjust this threshold as needed based on your requirements.
 - The application uses the Flutter Barometer plugin to access the barometer sensor on the device. Make sure to grant necessary permissions to access the sensor.
 
-Page 2: Code Explanation
+ Code Explanation
 
 The code provided is the implementation of the Barometer Example. It consists of the following components:
 
