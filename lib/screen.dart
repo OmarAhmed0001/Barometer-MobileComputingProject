@@ -146,8 +146,48 @@ class _ScreenState extends State<Screen> {
                 ),
               ),
             ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0, left: 28.0),
+                  child: SizedBox(
+                    width: 160,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateColor.resolveWith(
+                              (states) =>
+                                  const Color.fromARGB(255, 47, 129, 224))),
+                      onPressed: () => ShowOutliers(context),
+                      child: const Text(
+                        'Show Outliers',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0, left: 40.0),
+                  child: SizedBox(
+                    width: 160,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateColor.resolveWith(
+                              (states) =>
+                                  const Color.fromARGB(255, 47, 129, 224))),
+                      onPressed: () => ShowPressureData(context),
+                      child: const Text(
+                        'Show Pressure Data Details',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Padding(
-              padding: const EdgeInsets.all(40.0),
+              padding: const EdgeInsets.only(top: 40.0, bottom: 40.0),
               child: SizedBox(
                 width: 160,
                 height: 50,
@@ -155,9 +195,15 @@ class _ScreenState extends State<Screen> {
                   style: ButtonStyle(
                       backgroundColor: MaterialStateColor.resolveWith(
                           (states) => const Color.fromARGB(255, 47, 129, 224))),
-                  onPressed: () => ShowOutliers(context),
+                  onPressed: () {
+                    setState(() {
+                      surfacePressure = 0.0;
+                      bottomPressure = 0.0;
+                      pressureData.clear();
+                    });
+                  },
                   child: const Text(
-                    'Show Outliers',
+                    'Reset',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -286,6 +332,69 @@ class _ScreenState extends State<Screen> {
       );
       return;
     }
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: Text(
+          'Number of Pressure Data Before Remove outliers : ${pressureDataBeforeRemoveOutliers.length.toDouble()}\n'
+          'Pressure Data Before Remove outliers \n $pressureDataBeforeRemoveOutliers \n\n'
+          'Number of Pressure Data After Remove outliers : ${pressureDataAfterRemoveOutliers.length.toDouble()}\n'
+          'Pressure Data After Remove outliers \n $pressureDataAfterRemoveOutliers \n\n',
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void ShowPressureData(BuildContext context) {
+    if (pressureData.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          content: const Text(
+            'No pressure data available',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+// Remove outliers from pressureData
+    List<double> pressureDataBeforeRemoveOutliers = List.from(pressureData);
+    List<double> pressureDataAfterRemoveOutliers = List.from(pressureData);
+    print(
+        'Pressure Data Before Remove outliers : $pressureDataBeforeRemoveOutliers');
+    const double outlierThreshold = 1013.25; // Adjust this threshold as needed
+    final double mean =
+        pressureData.reduce((a, b) => a + b) / pressureData.length;
+    final double standardDeviation = sqrt(
+        pressureData.map((x) => pow(x - mean, 2)).reduce((a, b) => a + b) /
+            pressureData.length);
+    pressureDataAfterRemoveOutliers.removeWhere(
+        (x) => (x - mean).abs() > outlierThreshold * standardDeviation);
+
+    print(
+        'Pressure Data After Remove outliers : $pressureDataAfterRemoveOutliers');
+
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
