@@ -237,19 +237,23 @@ class _ScreenState extends State<Screen> {
       );
       return;
     }
-    double T = 273.15; // Absolute temperature in Kelvin
-    double L = 0.0065; // Temperature lapse rate in K/m
-    double P = 1013.25; // Pressure at sea level in hPa
-    double surfaceHeight = surfacePressure == 0.0
-        ? 0.0
-        : (((T + 37) / L) * log(P / surfacePressure));
-    double bottomHeight = bottomPressure == 0.0
-        ? 0.0
-        : (((T + 37) / L) * log(P / bottomPressure));
-    print('Surface Height: ${surfaceHeight.toString()}');
-    print('Bottom Height: ${bottomHeight.toString()}');
-
-    double height = ((surfaceHeight - bottomHeight).abs());
+    // double T = 273.15; // Absolute temperature in Kelvin
+    // double L = 0.0065; // Temperature lapse rate in K/m
+    // double P = 1013.25; // Pressure at sea level in hPa
+    // double surfaceHeight = surfacePressure == 0.0
+    //     ? 0.0
+    //     : (((T + 30) / L) * log(P / surfacePressure));
+    // double bottomHeight = bottomPressure == 0.0
+    //     ? 0.0
+    //     : (((T + 30) / L) * log(P / bottomPressure));
+    // print('Surface Height: ${surfaceHeight.toString()}');
+    // print('Bottom Height: ${bottomHeight.toString()}');
+    double airDensity = 1.225; // kg/m^3
+    double pressureDifference =
+        ((surfacePressure - bottomPressure).abs()) * 100; // in Pa
+    double gravity = 9.8; // m/s^2
+    // double height = ((surfaceHeight - bottomHeight).abs());
+    double height = (pressureDifference) / (airDensity * gravity);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
