@@ -248,7 +248,7 @@ class _ScreenState extends State<Screen> {
     //     : (((T + 30) / L) * log(P / bottomPressure));
     // print('Surface Height: ${surfaceHeight.toString()}');
     // print('Bottom Height: ${bottomHeight.toString()}');
-    double airDensity = 1.225; // kg/m^3
+    double airDensity = 1.147; // kg/m^3
     double pressureDifference =
         ((surfacePressure - bottomPressure).abs()) * 100; // in Pa
     double gravity = 9.8; // m/s^2
